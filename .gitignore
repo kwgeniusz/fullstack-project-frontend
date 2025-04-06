@@ -49,3 +49,6 @@ Thumbs.db
 # Docker
 .docker
 docker-compose.override.yml
+
+# Package lock
+package-lock.json
