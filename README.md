@@ -1,10 +1,10 @@
-# Formulario de Contacto - Frontend
+# Formulario de Pagos - Frontend
 
-Este proyecto es una aplicación web desarrollada con Vue.js que implementa un formulario de contacto avanzado con validaciones y manejo de archivos.
+Este proyecto es una aplicación web desarrollada con Vue.js que implementa un formulario de Pagos avanzado con validaciones y manejo de archivos.
 
 ## Características
 
-- 📝 Formulario de contacto con múltiples campos
+- 📝 Formulario de Pagos con múltiples campos
 - ✅ Validaciones en tiempo real
 - 📤 Subida de archivos para comprobantes de pago
 - 💳 Múltiples métodos de pago
@@ -16,12 +16,9 @@ Este proyecto es una aplicación web desarrollada con Vue.js que implementa un f
 - Vue.js 3 - Framework progresivo para construir interfaces de usuario
 - Pinia 3 - Biblioteca de gestión de estado para Vue 3
 - Axios 1 - Cliente HTTP basado en promesas para el navegador y Node.js
-- Yup 1 - Constructor de esquemas de validación para JavaScript
-- VeeValidate 4 - Validación de formularios para Vue.js
 - VueUse 13 - Colección de composables para Vue
 - Vue CLI 5 - Herramienta estándar para el desarrollo de Vue.js
 - ESLint 7 - Herramienta de análisis de código estático para JavaScript
-- Babel 7 - Compilador JavaScript para usar características de próxima generación
 
 ### Dependencias de desarrollo
 
@@ -129,31 +126,98 @@ src/
 
 ## Dockerización
 
-El proyecto incluye configuración para Docker:
+El proyecto está completamente dockerizado para facilitar su despliegue y ejecución en cualquier entorno. A continuación se detallan los pasos para instalar y ejecutar la aplicación utilizando Docker:
 
-1. **Construir la imagen**:
+### Requisitos previos
+
+- Docker instalado en tu sistema
+  - [Instrucciones de instalación de Docker](https://docs.docker.com/get-docker/)
+- Git para clonar el repositorio (opcional)
+
+### Instalación y ejecución con Docker
+
+1. **Clonar el repositorio** (si aún no lo has hecho):
+```bash
+git clone https://github.com/tu-usuario/fullstack-project-frontend.git
+cd fullstack-project-frontend
+```
+
+2. **Construir la imagen Docker**:
 ```bash
 docker build -t contact-form-frontend .
 ```
+Este comando creará una imagen optimizada para producción con todas las dependencias necesarias.
 
-2. **Ejecutar el contenedor**:
+3. **Ejecutar el contenedor**:
 ```bash
-docker run -p 8080:8080 contact-form-frontend
+docker run -d -p 8080:8080 --name contact-form contact-form-frontend
+```
+Esto ejecutará la aplicación en modo desacoplado (-d) y mapeará el puerto 8080 del contenedor al puerto 8080 de tu máquina.
+
+4. **Verificar que el contenedor está en ejecución**:
+```bash
+docker ps
+```
+Deberías ver el contenedor "contact-form" en la lista de contenedores en ejecución.
+
+5. **Acceder a la aplicación**:
+Abre tu navegador en [http://localhost:8080](http://localhost:8080)
+
+### Configuración de variables de entorno
+
+La aplicación está configurada para conectarse a una API backend. Por defecto, la URL de la API es `http://localhost:8000/api`, pero puedes modificarla usando variables de entorno:
+
+```bash
+docker run -d -p 8080:8080 -e VUE_APP_API_URL=http://tu-api-backend.com/api --name contact-form contact-form-frontend
 ```
 
-3. **Acceder a la aplicación**:
-Abre tu navegador en http://localhost:8080
+### Gestión del contenedor
 
-### Variables de entorno
-
-Para configurar la URL de la API (ya establecida como http://localhost:8000/api por defecto):
+- **Detener el contenedor**:
 ```bash
-docker run -p 8080:8080 -e VUE_APP_API_URL=http://localhost:8000/api contact-form-frontend
+docker stop contact-form
 ```
 
-Si necesitas cambiar esta configuración:
+- **Iniciar un contenedor detenido**:
 ```bash
-docker run -p 8080:8080 -e VUE_APP_API_URL=http://tu-nueva-api contact-form-frontend
+docker start contact-form
+```
+
+- **Ver logs del contenedor**:
+```bash
+docker logs contact-form
+```
+
+- **Eliminar el contenedor**:
+```bash
+docker rm -f contact-form
+```
+
+### Docker Compose (para entornos de desarrollo)
+
+Si estás desarrollando y quieres ejecutar tanto el frontend como el backend juntos, puedes usar Docker Compose. Crea un archivo `docker-compose.yml` en la raíz del proyecto:
+
+```yaml
+version: '3'
+services:
+  frontend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - VUE_APP_API_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+  
+  backend:
+    image: tu-imagen-backend
+    ports:
+      - "8000:8000"
+```
+
+Y luego ejecuta:
+```bash
+docker-compose up -d
 ```
 
 ## Construcción para Producción
