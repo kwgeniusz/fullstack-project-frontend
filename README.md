@@ -69,7 +69,7 @@ npm install
 VUE_APP_API_URL=http://localhost:8000/api
 ```
 
-## Desarrollo
+## Ejecución
 
 Para iniciar el servidor de desarrollo:
 
@@ -179,102 +179,6 @@ src/
 - `npm run build`: Crea una build de producción
 - `npm run lint`: Ejecuta el linter
 - `npm run test`: Ejecuta las pruebas unitarias
-
-## Dockerización
-
-El proyecto está completamente dockerizado para facilitar su despliegue y ejecución en cualquier entorno. A continuación se detallan los pasos para instalar y ejecutar la aplicación utilizando Docker:
-
-### Requisitos previos
-
-- Docker instalado en tu sistema
-  - [Instrucciones de instalación de Docker](https://docs.docker.com/get-docker/)
-- Git para clonar el repositorio (opcional)
-
-### Instalación y ejecución con Docker
-
-1. **Clonar el repositorio** (si aún no lo has hecho):
-```bash
-git clone https://github.com/tu-usuario/fullstack-project-frontend.git
-cd fullstack-project-frontend
-```
-
-2. **Construir la imagen Docker**:
-```bash
-docker build -t contact-form-frontend .
-```
-Este comando creará una imagen optimizada para producción con todas las dependencias necesarias.
-
-3. **Ejecutar el contenedor**:
-```bash
-docker run -d -p 8080:8080 --name contact-form contact-form-frontend
-```
-Esto ejecutará la aplicación en modo desacoplado (-d) y mapeará el puerto 8080 del contenedor al puerto 8080 de tu máquina.
-
-4. **Verificar que el contenedor está en ejecución**:
-```bash
-docker ps
-```
-Deberías ver el contenedor "contact-form" en la lista de contenedores en ejecución.
-
-5. **Acceder a la aplicación**:
-Abre tu navegador en [http://localhost:8080](http://localhost:8080)
-
-### Configuración de variables de entorno
-
-La aplicación está configurada para conectarse a una API backend. Por defecto, la URL de la API es `http://localhost:8000/api`, pero puedes modificarla usando variables de entorno:
-
-```bash
-docker run -d -p 8080:8080 -e VUE_APP_API_URL=http://tu-api-backend.com/api --name contact-form contact-form-frontend
-```
-
-### Gestión del contenedor
-
-- **Detener el contenedor**:
-```bash
-docker stop contact-form
-```
-
-- **Iniciar un contenedor detenido**:
-```bash
-docker start contact-form
-```
-
-- **Ver logs del contenedor**:
-```bash
-docker logs contact-form
-```
-
-- **Eliminar el contenedor**:
-```bash
-docker rm -f contact-form
-```
-
-### Docker Compose (para entornos de desarrollo)
-
-Si estás desarrollando y quieres ejecutar tanto el frontend como el backend juntos, puedes usar Docker Compose. Crea un archivo `docker-compose.yml` en la raíz del proyecto:
-
-```yaml
-version: '3'
-services:
-  frontend:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      - VUE_APP_API_URL=http://localhost:8000/api
-    depends_on:
-      - backend
-  
-  backend:
-    image: tu-imagen-backend
-    ports:
-      - "8000:8000"
-```
-
-Y luego ejecuta:
-```bash
-docker-compose up -d
-```
 
 ## Construcción para Producción
 
