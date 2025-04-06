@@ -13,11 +13,36 @@ Este proyecto es una aplicación web desarrollada con Vue.js que implementa un f
 
 ## Tecnologías Utilizadas
 
-- Vue.js 3
-- Pinia (manejo de estado)
-- Axios (peticiones HTTP)
-- Yup (validaciones de formulario)
-- Vue CLI
+- Vue.js 3 - Framework progresivo para construir interfaces de usuario
+- Pinia 3 - Biblioteca de gestión de estado para Vue 3
+- Axios 1 - Cliente HTTP basado en promesas para el navegador y Node.js
+- Yup 1 - Constructor de esquemas de validación para JavaScript
+- VeeValidate 4 - Validación de formularios para Vue.js
+- VueUse 13 - Colección de composables para Vue
+- Vue CLI 5 - Herramienta estándar para el desarrollo de Vue.js
+- ESLint 7 - Herramienta de análisis de código estático para JavaScript
+- Babel 7 - Compilador JavaScript para usar características de próxima generación
+
+### Dependencias de desarrollo
+
+```json
+"devDependencies": {
+  "@babel/core": "^7.12.16",
+  "@babel/eslint-parser": "^7.12.16",
+  "@vue/cli-plugin-babel": "~5.0.0",
+  "@vue/cli-plugin-eslint": "~5.0.0",
+  "@vue/cli-service": "~5.0.0",
+  "eslint": "^7.32.0",
+  "eslint-plugin-vue": "^8.0.3"
+}
+```
+
+### Compatibilidad de navegadores
+
+El proyecto está configurado para ser compatible con:
+- Navegadores con más del 1% de uso global
+- Las últimas 2 versiones de cada navegador principal
+- No compatible con IE 11
 
 ## Requisitos Previos
 
