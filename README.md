@@ -127,6 +127,35 @@ src/
 - `npm run lint`: Ejecuta el linter
 - `npm run test`: Ejecuta las pruebas unitarias
 
+## Dockerización
+
+El proyecto incluye configuración para Docker:
+
+1. **Construir la imagen**:
+```bash
+docker build -t contact-form-frontend .
+```
+
+2. **Ejecutar el contenedor**:
+```bash
+docker run -p 8080:8080 contact-form-frontend
+```
+
+3. **Acceder a la aplicación**:
+Abre tu navegador en http://localhost:8080
+
+### Variables de entorno
+
+Para configurar la URL de la API (ya establecida como http://localhost:8000/api por defecto):
+```bash
+docker run -p 8080:8080 -e VUE_APP_API_URL=http://localhost:8000/api contact-form-frontend
+```
+
+Si necesitas cambiar esta configuración:
+```bash
+docker run -p 8080:8080 -e VUE_APP_API_URL=http://tu-nueva-api contact-form-frontend
+```
+
 ## Construcción para Producción
 
 Para crear una build de producción:
