@@ -10,7 +10,20 @@ const api = axios.create({
 
 export const submitForm = async (formData) => {
   try {
-    const response = await api.post('/submit-form', formData);
+    const response = await api.post('/submissions', formData);
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : error;
+  }
+};
+
+export const getSubmissions = async () => {
+  try {
+    const response = await api.get('/submissions', {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     return response.data;
   } catch (error) {
     throw error.response ? error.response.data : error;
