@@ -10,11 +10,16 @@ Este proyecto es una aplicación web desarrollada con Vue.js que implementa un f
 - 💳 Múltiples métodos de pago
 - 🎨 Interfaz de usuario moderna y responsive
 - 🔒 Validaciones de seguridad para archivos
+- 📊 Tabla de visualización de registros guardados
+- 🔔 Sistema de notificaciones y alertas
+- 🧭 Navegación entre vistas con Vue Router
+- 🔑 Autenticación y autorización de usuarios
 
 ## Tecnologías Utilizadas
 
 - Vue.js 3 - Framework progresivo para construir interfaces de usuario
 - Pinia 3 - Biblioteca de gestión de estado para Vue 3
+- Vue Router 4 - Enrutador oficial para Vue.js
 - Axios 1 - Cliente HTTP basado en promesas para el navegador y Node.js
 - VueUse 13 - Colección de composables para Vue
 - Vue CLI 5 - Herramienta estándar para el desarrollo de Vue.js
@@ -104,6 +109,50 @@ El formulario incluye los siguientes campos:
    - Mínimo 10 caracteres
    - Máximo 500 caracteres
 
+## Sistema de Navegación
+
+La aplicación implementa un sistema de navegación completo utilizando Vue Router:
+
+- **Barra de navegación superior**: Permite alternar entre el formulario y la tabla de registros
+- **Enlaces contextuales**: Botones que facilitan la navegación entre vistas relacionadas
+- **Rutas definidas**:
+  - `/`: Vista principal del formulario de pagos
+  - `/submissions`: Vista de la tabla de registros guardados
+
+## Sistema de Alertas
+
+La aplicación cuenta con un sistema de alertas para proporcionar feedback al usuario:
+
+- **Tipos de alertas**:
+  - Success: Operaciones completadas con éxito
+  - Error: Errores en operaciones o validaciones
+  - Info: Información general para el usuario
+  - Warning: Advertencias sobre posibles problemas
+
+- **Características**:
+  - Aparecen en la esquina superior derecha
+  - Se cierran automáticamente después de un tiempo
+  - Pueden cerrarse manualmente
+  - Múltiples alertas se apilan ordenadamente
+
+## Tabla de Registros
+
+La vista de registros muestra todos los pagos guardados en el sistema:
+
+- **Columnas principales**:
+  - Nombre del pagador
+  - Email de contacto
+  - Tipo de documento
+  - Método de pago
+  - Fecha de registro (formateada)
+  - Comprobante de pago (con vista previa para imágenes)
+
+- **Características**:
+  - Vista previa de imágenes de comprobantes
+  - Enlaces para ver comprobantes en tamaño completo
+  - Formateo de fechas para mejor legibilidad
+  - Diseño responsive que se adapta a diferentes tamaños de pantalla
+
 ## Estructura del Proyecto
 
 ```
@@ -111,10 +160,17 @@ src/
 ├── assets/         # Recursos estáticos
 │   └── styles/     # Archivos CSS
 ├── components/     # Componentes Vue reutilizables
+│   ├── AlertContainer.vue  # Contenedor para mostrar alertas
+│   └── AlertMessage.vue    # Componente individual de alerta
+├── router/         # Configuración de rutas
 ├── services/       # Servicios para API y carga de archivos
 ├── stores/         # Stores de Pinia
+│   ├── alertStore.js       # Store para gestión de alertas
+│   └── formStore.js        # Store para gestión del formulario
 ├── validation/     # Esquemas de validación
 └── views/          # Vistas principales
+    ├── FormView.vue        # Vista del formulario de pagos
+    └── SubmissionsView.vue # Vista de la tabla de registros
 ```
 
 ## Scripts Disponibles
