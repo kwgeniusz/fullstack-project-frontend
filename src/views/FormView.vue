@@ -4,10 +4,10 @@
     
     <form @submit.prevent="handleSubmit" class="contact-form">
       <FormInput
-        id="name"
+        id="nombre"
         label="Nombre"
-        v-model="form.name"
-        :error="errors.name"
+        v-model="form.nombre"
+        :error="errors.nombre"
       />
       
       <FormInput
@@ -19,40 +19,43 @@
       />
       
       <FormSelect
-        id="documentType"
-        label="Tipo de Documento"
-        v-model="form.documentType"
+        id="tipo_comprobante"
+        label="Tipo de Comprobante"
+        v-model="form.tipo_comprobante"
         :options="documentTypes"
-        :error="errors.documentType"
+        :error="errors.tipo_comprobante"
       />
       
       <FormSelect
-        id="paymentMethod"
+        id="metodo_pago"
         label="Método de Pago"
-        v-model="form.paymentMethod"
+        v-model="form.metodo_pago"
         :options="paymentMethods"
-        :error="errors.paymentMethod"
+        :error="errors.metodo_pago"
       />
       
       <FileUpload
         v-if="showPaymentProof"
-        id="paymentProof"
+        id="comprobante_pago"
         label="Comprobante de Pago"
-        v-model="form.paymentProof"
-        :error="errors.paymentProof"
+        v-model="form.comprobante_pago"
+        :error="errors.comprobante_pago"
       />
       
       <FormTextarea
-        id="message"
+        id="mensaje"
         label="Mensaje"
-        v-model="form.message"
-        :error="errors.message"
+        v-model="form.mensaje"
+        :error="errors.mensaje"
       />
       
       <div class="form-actions">
-        <button type="submit" :disabled="isSubmitting">
+        <button type="submit" class="submit-button" :disabled="isSubmitting">
           {{ isSubmitting ? 'Enviando...' : 'Enviar' }}
         </button>
+        <router-link to="/submissions" class="view-submissions-button">
+          Ver registros guardados
+        </router-link>
       </div>
       
       <div v-if="submitError" class="error-message">
@@ -69,7 +72,6 @@ import FormSelect from '@/components/FormSelect.vue';
 import FormTextarea from '@/components/FormTextarea.vue';
 import FileUpload from '@/components/FileUpload.vue';
 import { useFormStore } from '@/stores/formStore';
-import { uploadPaymentProof } from '@/services/uploadService';
 
 const formStore = useFormStore();
 const showPaymentProof = ref(false);
@@ -77,22 +79,22 @@ const isSubmitting = ref(false);
 const submitError = ref('');
 
 const form = reactive({
-  name: '',
+  nombre: '',
   email: '',
-  message: '',
-  documentType: '',
-  paymentMethod: '',
-  paymentProof: null,
-  paymentProofUrl: ''
+  mensaje: '',
+  tipo_comprobante: '',
+  metodo_pago: '',
+  comprobante_pago: null,
+  comprobante_pago_url: ''
 });
 
 const errors = reactive({
-  name: '',
+  nombre: '',
   email: '',
-  message: '',
-  documentType: '',
-  paymentMethod: '',
-  paymentProof: ''
+  mensaje: '',
+  tipo_comprobante: '',
+  metodo_pago: '',
+  comprobante_pago: ''
 });
 
 // Limpiar todos los errores
@@ -108,14 +110,14 @@ const validateForm = () => {
   let isValid = true;
   
   // Validar nombre
-  if (!form.name) {
-    errors.name = 'El nombre es requerido';
+  if (!form.nombre) {
+    errors.nombre = 'El nombre es requerido';
     isValid = false;
-  } else if (form.name.length < 2) {
-    errors.name = 'El nombre debe tener al menos 2 caracteres';
+  } else if (form.nombre.length < 2) {
+    errors.nombre = 'El nombre debe tener al menos 2 caracteres';
     isValid = false;
-  } else if (form.name.length > 50) {
-    errors.name = 'El nombre no puede tener más de 50 caracteres';
+  } else if (form.nombre.length > 50) {
+    errors.nombre = 'El nombre no puede tener más de 50 caracteres';
     isValid = false;
   }
   
@@ -131,54 +133,54 @@ const validateForm = () => {
     }
   }
   
-  // Validar tipo de documento
-  if (!form.documentType) {
-    errors.documentType = 'El tipo de documento es requerido';
+  // Validar tipo de comprobante
+  if (!form.tipo_comprobante) {
+    errors.tipo_comprobante = 'El tipo de comprobante es requerido';
     isValid = false;
-  } else if (!['dni', 'passport', 'license'].includes(form.documentType)) {
-    errors.documentType = 'Seleccione un tipo de documento válido';
+  } else if (!['Factura', 'CFF', 'Ticket'].includes(form.tipo_comprobante)) {
+    errors.tipo_comprobante = 'Seleccione un tipo de comprobante válido';
     isValid = false;
   }
   
   // Validar método de pago
-  if (!form.paymentMethod) {
-    errors.paymentMethod = 'El método de pago es requerido';
+  if (!form.metodo_pago) {
+    errors.metodo_pago = 'El método de pago es requerido';
     isValid = false;
-  } else if (!['cash', 'transfer', 'card'].includes(form.paymentMethod)) {
-    errors.paymentMethod = 'Seleccione un método de pago válido';
+  } else if (!['Efectivo', 'Transferencia', 'Tarjeta'].includes(form.metodo_pago)) {
+    errors.metodo_pago = 'Seleccione un método de pago válido';
     isValid = false;
   }
   
   // Validar comprobante de pago solo si es transferencia
-  if (form.paymentMethod === 'transfer') {
-    if (!form.paymentProof) {
-      errors.paymentProof = 'El comprobante de pago es requerido';
+  if (form.metodo_pago === 'Transferencia') {
+    if (!form.comprobante_pago) {
+      errors.comprobante_pago = 'El comprobante de pago es requerido';
       isValid = false;
     } else {
       // Validar tamaño del archivo (máximo 2MB)
-      if (form.paymentProof.size > 2 * 1024 * 1024) {
-        errors.paymentProof = 'El archivo no debe exceder 2MB';
+      if (form.comprobante_pago.size > 2 * 1024 * 1024) {
+        errors.comprobante_pago = 'El archivo no debe exceder 2MB';
         isValid = false;
       }
       
       // Validar tipo de archivo
       const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-      if (!validTypes.includes(form.paymentProof.type)) {
-        errors.paymentProof = 'Solo se permiten archivos PDF, JPEG o PNG';
+      if (!validTypes.includes(form.comprobante_pago.type)) {
+        errors.comprobante_pago = 'Solo se permiten archivos PDF, JPEG o PNG';
         isValid = false;
       }
     }
   }
   
   // Validar mensaje
-  if (!form.message) {
-    errors.message = 'El mensaje es requerido';
+  if (!form.mensaje) {
+    errors.mensaje = 'El mensaje es requerido';
     isValid = false;
-  } else if (form.message.length < 10) {
-    errors.message = 'El mensaje debe tener al menos 10 caracteres';
+  } else if (form.mensaje.length < 10) {
+    errors.mensaje = 'El mensaje debe tener al menos 10 caracteres';
     isValid = false;
-  } else if (form.message.length > 500) {
-    errors.message = 'El mensaje no puede tener más de 500 caracteres';
+  } else if (form.mensaje.length > 500) {
+    errors.mensaje = 'El mensaje no puede tener más de 500 caracteres';
     isValid = false;
   }
   
@@ -186,11 +188,11 @@ const validateForm = () => {
 };
 
 // Observar cambios en el método de pago
-watch(() => form.paymentMethod, (newValue) => {
-  showPaymentProof.value = newValue === 'transfer';
-  if (newValue !== 'transfer') {
-    form.paymentProof = null;
-    errors.paymentProof = '';
+watch(() => form.metodo_pago, (newValue) => {
+  showPaymentProof.value = newValue === 'Transferencia';
+  if (newValue !== 'Transferencia') {
+    form.comprobante_pago = null;
+    errors.comprobante_pago = '';
   }
 });
 
@@ -204,50 +206,34 @@ const handleSubmit = async () => {
     
     // Si hay errores en algún campo, detener el envío
     const hasErrors = Object.values(errors).some(error => error !== '');
-    console.log(isValid)
-    console.log(errors)
+    // console.log(isValid)
+    // console.log(errors)
     if (!isValid || hasErrors) {
       submitError.value = 'Por favor, corrija los errores en el formulario';
       return;
     }
     
-    // Si es transferencia y hay comprobante, subir primero el archivo
-    if (form.paymentMethod === 'transfer' && form.paymentProof) {
-      try {
-        const formData = new FormData();
-        formData.append('file', form.paymentProof);
-        
-        const uploadResult = await uploadPaymentProof(formData);
-        if (uploadResult && uploadResult.url) {
-          form.paymentProofUrl = uploadResult.url;
-        } else {
-          submitError.value = 'Error: No se recibió URL del comprobante';
-          return;
-        }
-      } catch (uploadError) {
-        console.error('Error de carga:', uploadError);
-        submitError.value = 'Error al subir el comprobante de pago';
-        return;
-      }
-    }
-    
     // Preparar datos para envío
-    const formDataToSubmit = {
-      name: form.name,
-      email: form.email,
-      message: form.message,
-      documentType: form.documentType,
-      paymentMethod: form.paymentMethod
-    };
+    const formData = new FormData();
     
-    // Solo incluir paymentProofUrl si es transferencia
-    if (form.paymentMethod === 'transfer' && form.paymentProofUrl) {
-      formDataToSubmit.paymentProof = form.paymentProofUrl;
+    // Agregar todos los campos de texto
+    formData.append('nombre', form.nombre);
+    formData.append('email', form.email);
+    formData.append('mensaje', form.mensaje);
+    formData.append('tipo_comprobante', form.tipo_comprobante);
+    formData.append('metodo_pago', form.metodo_pago);
+    
+    // Agregar el archivo de comprobante si existe
+    if (form.metodo_pago === 'Transferencia' && form.comprobante_pago) {
+      formData.append('comprobante_pago', form.comprobante_pago);
+    } else {
+      // Enviar null si no hay comprobante
+      formData.append('comprobante_pago', '');
     }
     
     // Enviar el formulario completo
     try {
-      await formStore.submitForm(formDataToSubmit);
+      await formStore.submitForm(formData);
       
       // Mostrar mensaje de éxito
       submitError.value = '';
@@ -255,9 +241,9 @@ const handleSubmit = async () => {
       
       // Limpiar el formulario después del éxito
       Object.keys(form).forEach(key => {
-        form[key] = key === 'paymentProof' ? null : '';
+        form[key] = key === 'comprobante_pago' ? null : '';
       });
-      form.paymentProofUrl = '';
+      form.comprobante_pago_url = '';
       clearErrors();
     } catch (submitError) {
       submitError.value = submitError.message || 'Error al enviar el formulario';
@@ -273,18 +259,84 @@ const handleSubmit = async () => {
 };
 
 const documentTypes = [
-  { value: 'dni', label: 'DNI' },
-  { value: 'passport', label: 'Pasaporte' },
-  { value: 'license', label: 'Licencia de Conducir' }
+  { value: 'Factura', label: 'Factura' },
+  { value: 'CFF', label: 'CFF' },
+  { value: 'Ticket', label: 'Ticket' }
 ];
 
 const paymentMethods = [
-  { value: 'cash', label: 'Efectivo' },
-  { value: 'transfer', label: 'Transferencia' },
-  { value: 'card', label: 'Tarjeta' }
+  { value: 'Efectivo', label: 'Efectivo' },
+  { value: 'Transferencia', label: 'Transferencia' },
+  { value: 'Tarjeta', label: 'Tarjeta' }
 ];
 </script>
 
-<style>
-@import '@/assets/styles/form.css';
+<style scoped>
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.submit-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.view-submissions-button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  display: inline-flex;
+  align-items: center;
+}
+
+.view-submissions-button:hover {
+  background-color: #0b7dda;
+}
+
+.error-message {
+  color: #f44336;
+  margin-top: 10px;
+  text-align: center;
+}
 </style>
